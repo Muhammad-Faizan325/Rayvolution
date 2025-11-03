@@ -10,6 +10,8 @@ import { AnimatedCounter } from "@/components/animated-counter"
 import Link from "next/link"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,6 +34,37 @@ const itemVariants = {
 }
 
 export default function Dashboard() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [userName, setUserName] = useState("User")
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem("user")
+    if (!userData) {
+      // Redirect to login if not authenticated
+      router.push("/login")
+    } else {
+      // Get user name from localStorage
+      const user = JSON.parse(userData)
+      setUserName(user.name || "User")
+      setIsLoading(false)
+    }
+  }, [router])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        >
+          <Zap className="w-12 h-12 text-primary" />
+        </motion.div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-card/10 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +77,7 @@ export default function Dashboard() {
         >
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-2">National Dashboard</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">Welcome, {userName}!</h1>
               <p className="text-foreground/60 text-lg">Real-time energy insights across Pakistan</p>
             </div>
             <WeatherIndicator />

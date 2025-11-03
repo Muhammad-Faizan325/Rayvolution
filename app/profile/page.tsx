@@ -55,6 +55,10 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     localStorage.removeItem("user")
+    // Clear authentication cookie
+    document.cookie = "isAuthenticated=; path=/; max-age=0"
+    // Trigger auth change event for navbar
+    window.dispatchEvent(new Event("authChange"))
     router.push("/login")
   }
 

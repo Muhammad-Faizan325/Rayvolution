@@ -20,14 +20,28 @@ export function Navbar() {
     setIsDark(isDarkMode)
 
     // Check if user is logged in
-    const userData = localStorage.getItem("user")
-    setIsLoggedIn(!!userData)
+    const checkAuth = () => {
+      const userData = localStorage.getItem("user")
+      setIsLoggedIn(!!userData)
+    }
+    checkAuth()
+
+    // Listen for storage changes (login/logout events)
+    window.addEventListener("storage", checkAuth)
+
+    // Listen for custom auth events
+    window.addEventListener("authChange", checkAuth as EventListener)
 
     // Ensure the document class matches the saved theme
     if (isDarkMode) {
       document.documentElement.classList.add("dark")
     } else {
       document.documentElement.classList.remove("dark")
+    }
+
+    return () => {
+      window.removeEventListener("storage", checkAuth)
+      window.removeEventListener("authChange", checkAuth as EventListener)
     }
   }, [])
 

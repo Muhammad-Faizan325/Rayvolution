@@ -53,10 +53,11 @@ export default function SignupPage() {
       const data = await response.json()
 
       if (response.ok) {
-        // Store user data in localStorage
-        localStorage.setItem("user", JSON.stringify(data.user))
-        // Redirect to dashboard
-        router.push("/dashboard")
+        // Don't store user data yet - redirect to login instead
+        // Show success message
+        alert("Account created successfully! Please login to continue.")
+        // Redirect to login page
+        router.push("/login")
       } else {
         setError(data.error || "Signup failed. Please try again.")
       }

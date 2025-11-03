@@ -35,6 +35,10 @@ export default function LoginPage() {
       if (response.ok) {
         // Store user data in localStorage
         localStorage.setItem("user", JSON.stringify(data.user))
+        // Set authentication cookie for middleware
+        document.cookie = "isAuthenticated=true; path=/; max-age=86400" // 24 hours
+        // Trigger auth change event for navbar
+        window.dispatchEvent(new Event("authChange"))
         // Redirect to dashboard
         router.push("/dashboard")
       } else {

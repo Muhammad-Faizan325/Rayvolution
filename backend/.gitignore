@@ -1,0 +1,36 @@
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Directory for instrumented libs
+lib-cov
+
+# Coverage directory
+coverage/
+
+# Testing
+.nyc_output
+
+# Production
+dist/
+build/
+
+# Misc
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo

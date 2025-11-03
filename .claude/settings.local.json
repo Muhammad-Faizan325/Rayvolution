@@ -9,7 +9,10 @@
       "Bash(nul)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(.gitignore)"
+      "Bash(.gitignore)",
+      "Bash(if exist \"models\\Marketplace.model.js\" del \"models\\Marketplace.model.js\")",
+      "Bash(if exist \"controllers\\marketplace.controller.js\" del \"controllers\\marketplace.controller.js\")",
+      "Bash(if exist \"routes\\marketplace.routes.js\" del \"routes\\marketplace.routes.js\")"
     ],
     "deny": [],
     "ask": []

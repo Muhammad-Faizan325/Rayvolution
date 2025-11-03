@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server"
-
-// In production, save to a real database
-const REGISTERED_USERS: any[] = []
+import { userStorage } from "@/lib/users-storage"
 
 export async function POST(request: Request) {
   try {
@@ -34,8 +32,7 @@ export async function POST(request: Request) {
     }
 
     // Check if user already exists
-    const existingUser = REGISTERED_USERS.find((u) => u.email === email)
-    if (existingUser) {
+    if (userStorage.emailExists(email)) {
       return NextResponse.json(
         { error: "User with this email already exists" },
         { status: 409 }
@@ -63,8 +60,8 @@ export async function POST(request: Request) {
       },
     }
 
-    // Save to "database"
-    REGISTERED_USERS.push(newUser)
+    // Save to shared user storage
+    userStorage.add(newUser)
 
     // Remove password from response
     const { password: _, ...userWithoutPassword } = newUser

@@ -1,19 +1,5 @@
 import { NextResponse } from "next/server"
-
-// Mock user database (in production, use a real database)
-const MOCK_USERS = [
-  {
-    id: "1",
-    name: "Ahmad Khan",
-    email: "ahmad@example.com",
-    password: "password123", // In production, use hashed passwords
-    phone: "+92 300 1234567",
-    city: "Lahore",
-    solarPanels: true,
-    energyGoal: "solar-adoption",
-    joinDate: "2024-01-15",
-  },
-]
+import { userStorage } from "@/lib/users-storage"
 
 export async function POST(request: Request) {
   try {
@@ -27,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     // Find user by email
-    const user = MOCK_USERS.find((u) => u.email === email)
+    const user = userStorage.findByEmail(email)
 
     if (!user) {
       return NextResponse.json(

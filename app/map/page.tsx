@@ -4,6 +4,8 @@ import { motion } from "framer-motion"
 import { useState } from "react"
 import { PakistanMap } from "@/components/pakistan-map"
 import { CityInsightDrawer } from "@/components/city-insight-drawer"
+import { DashboardCard } from "@/components/dashboard-card"
+import { MapPin, Users, Zap, TrendingUp } from "lucide-react"
 
 interface City {
   id: string
@@ -136,10 +138,48 @@ export default function MapPage() {
         transition={{ duration: 0.6 }}
       >
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">Live Solar Map</h1>
-          <p className="text-foreground/60 text-lg">
-            Color-coded adoption levels across Pakistan. Click any city for detailed insights.
+          <h1 className="text-4xl md:text-5xl font-bold mb-2">Community Impact Map</h1>
+          <p className="text-foreground/60 text-lg mb-8">
+            Interactive map showing city-wise solar adoption and power shortage across Pakistan
           </p>
+
+          {/* National Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <DashboardCard
+              icon={MapPin}
+              label="Cities Covered"
+              value={cities.length.toString()}
+              trend="+2 this month"
+              trendPositive
+              accentColor="cyan"
+            />
+            <DashboardCard
+              icon={Users}
+              label="Total Solar Users"
+              value={(cities.reduce((acc, city) => acc + city.users, 0)).toString()}
+              trend="+145 this week"
+              trendPositive
+              accentColor="emerald"
+            />
+            <DashboardCard
+              icon={TrendingUp}
+              label="Avg Adoption Rate"
+              value={Math.round(cities.reduce((acc, city) => acc + city.adoptionRate, 0) / cities.length).toString()}
+              suffix="%"
+              trend="+5.2%"
+              trendPositive
+              accentColor="cyan"
+            />
+            <DashboardCard
+              icon={Zap}
+              label="Avg Power Shortage"
+              value={Math.round(cities.reduce((acc, city) => acc + city.powerShortage, 0) / cities.length).toString()}
+              suffix="%"
+              trend="-3.1%"
+              trendPositive
+              accentColor="emerald"
+            />
+          </div>
         </div>
       </motion.div>
 

@@ -26,7 +26,7 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#000000" />
       </head>
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${inter.className} font-sans antialiased`} suppressHydrationWarning>
         <ThemeProvider>
           <Navbar />
           <main className="min-h-screen">{children}</main>

@@ -6,8 +6,10 @@ import { useState, useEffect } from "react"
 
 export function WeatherIndicator() {
   const [weather, setWeather] = useState<"sunny" | "cloudy" | "night">("sunny")
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     // Simulate weather based on time of day
     const hour = new Date().getHours()
     if (hour >= 6 && hour < 12) setWeather("sunny")
@@ -24,6 +26,20 @@ export function WeatherIndicator() {
 
   const config = weatherConfig[weather]
   const Icon = config.icon
+
+  if (!mounted) {
+    return (
+      <div className={`glass-dark px-6 py-4 rounded-xl flex items-center gap-3 bg-gradient-to-r ${config.color} bg-opacity-10`}>
+        <Icon
+          className={`w-5 h-5 ${weather === "sunny" ? "text-yellow-400" : weather === "cloudy" ? "text-gray-400" : "text-indigo-400"}`}
+        />
+        <div>
+          <p className="text-sm font-medium text-foreground">{config.label} Today</p>
+          <p className="text-xs text-foreground/60">Optimal for solar</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <motion.div

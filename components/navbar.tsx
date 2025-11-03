@@ -1,18 +1,34 @@
 "use client"
 
 import Link from "next/link"
-import { Sun, Moon, Menu, X } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { Sun, Moon, Menu, X, User, LogIn } from "lucide-react"
 import { useState, useEffect } from "react"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
-    const isDarkMode = document.documentElement.classList.contains("dark")
+    // Check localStorage first, then check the document class
+    const savedTheme = localStorage.getItem("theme")
+    const isDarkMode = savedTheme === "dark" || document.documentElement.classList.contains("dark")
     setIsDark(isDarkMode)
+
+    // Check if user is logged in
+    const userData = localStorage.getItem("user")
+    setIsLoggedIn(!!userData)
+
+    // Ensure the document class matches the saved theme
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark")
+    } else {
+      document.documentElement.classList.remove("dark")
+    }
   }, [])
 
   const toggleTheme = () => {
@@ -43,26 +59,119 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/#features" className="text-foreground/70 hover:text-primary transition-colors">
-              Features
-            </Link>
-            <Link href="/dashboard" className="text-foreground/70 hover:text-primary transition-colors">
+          <div className="hidden md:flex items-center gap-6">
+            <Link
+              href="/dashboard"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/dashboard" ? "text-primary" : ""
+              }`}
+            >
               Dashboard
+              {pathname === "/dashboard" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
             </Link>
-            <Link href="/calculator" className="text-foreground/70 hover:text-primary transition-colors">
-              Calculator
+            <Link
+              href="/ai-prediction"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/ai-prediction" ? "text-primary" : ""
+              }`}
+            >
+              AI Prediction
+              {pathname === "/ai-prediction" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
             </Link>
-            <Link href="/map" className="text-foreground/70 hover:text-primary transition-colors">
+            <Link
+              href="/map"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/map" ? "text-primary" : ""
+              }`}
+            >
               Map
+              {pathname === "/map" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
             </Link>
-            <Link href="/community" className="text-foreground/70 hover:text-primary transition-colors">
+            <Link
+              href="/community"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/community" ? "text-primary" : ""
+              }`}
+            >
               Community
+              {pathname === "/community" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
+            </Link>
+            <Link
+              href="/marketplace"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/marketplace" ? "text-primary" : ""
+              }`}
+            >
+              Marketplace
+              {pathname === "/marketplace" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
+            </Link>
+            <Link
+              href="/challenges"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/challenges" ? "text-primary" : ""
+              }`}
+            >
+              Challenges
+              {pathname === "/challenges" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
+            </Link>
+            <Link
+              href="/sustainability"
+              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
+                pathname === "/sustainability" ? "text-primary" : ""
+              }`}
+            >
+              Score
+              {pathname === "/sustainability" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
+              )}
             </Link>
           </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-4">
+            {/* Auth Buttons - Desktop */}
+            <div className="hidden md:flex items-center gap-3">
+              {isLoggedIn ? (
+                <Link
+                  href="/profile"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors ${
+                    pathname === "/profile" ? "bg-primary/10 border-primary" : ""
+                  }`}
+                >
+                  <User className="w-4 h-4" />
+                  <span className="text-sm">Profile</span>
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span className="text-sm">Login</span>
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-90 transition-opacity"
+                  >
+                    <span className="text-sm font-medium">Sign Up</span>
+                  </Link>
+                </>
+              )}
+            </div>
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg border border-border hover:bg-muted transition-colors"
@@ -82,25 +191,138 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2 border-t border-border">
-            <Link href="/#features" className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors">
-              Features
-            </Link>
-            <Link href="/dashboard" className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors">
+          <div className="md:hidden pb-4 space-y-2 border-t border-border mt-2">
+            <Link
+              href="/dashboard"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/dashboard" ? "text-primary font-medium" : ""
+              }`}
+            >
               Dashboard
+              {pathname === "/dashboard" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/ai-prediction"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/ai-prediction" ? "text-primary font-medium" : ""
+              }`}
+            >
+              AI Prediction
+              {pathname === "/ai-prediction" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/map"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/map" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Community Map
+              {pathname === "/map" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/community"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/community" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Community
+              {pathname === "/community" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/marketplace"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/marketplace" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Marketplace
+              {pathname === "/marketplace" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/challenges"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/challenges" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Challenges
+              {pathname === "/challenges" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
+            </Link>
+            <Link
+              href="/sustainability"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/sustainability" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Sustainability Score
+              {pathname === "/sustainability" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
             </Link>
             <Link
               href="/calculator"
-              className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/calculator" ? "text-primary font-medium" : ""
+              }`}
             >
               Calculator
+              {pathname === "/calculator" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
             </Link>
-            <Link href="/map" className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors">
-              Map
+            <Link
+              href="/admin"
+              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                pathname === "/admin" ? "text-primary font-medium" : ""
+              }`}
+            >
+              Admin
+              {pathname === "/admin" && (
+                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+              )}
             </Link>
-            <Link href="/community" className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors">
-              Community
-            </Link>
+
+            {/* Mobile Auth Links */}
+            <div className="border-t border-border pt-2 mt-2">
+              {isLoggedIn ? (
+                <Link
+                  href="/profile"
+                  className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
+                    pathname === "/profile" ? "text-primary font-medium" : ""
+                  }`}
+                >
+                  Profile
+                  {pathname === "/profile" && (
+                    <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
+                  )}
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="block px-4 py-2 text-foreground/70 hover:text-primary transition-colors"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="block mx-4 my-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-center font-medium"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

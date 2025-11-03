@@ -8,9 +8,17 @@ interface AnimatedCounterProps {
 }
 
 export function AnimatedCounter({ target, duration = 2000 }: AnimatedCounterProps) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(target)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    setCount(0)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     let startTime: number
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp
@@ -23,7 +31,7 @@ export function AnimatedCounter({ target, duration = 2000 }: AnimatedCounterProp
     }
 
     requestAnimationFrame(animate)
-  }, [target, duration])
+  }, [target, duration, mounted])
 
   return <span>{count.toLocaleString()}</span>
 }

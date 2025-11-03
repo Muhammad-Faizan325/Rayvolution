@@ -75,6 +75,25 @@ const itemVariants = {
 }
 
 export default function AdminDashboard() {
+  const handleExportCSV = () => {
+    // Prepare data for CSV export
+    const csvData = [
+      ["Metric", "Value", "Trend"],
+      ["Total Users", "2,847", "+12.5%"],
+      ["Active Reports", "1,247", "+34.2%"],
+      ["Adoption Rate", "42%", "+8.1%"],
+      ["Total Energy Saved", "15,480 kWh", "+28.4%"],
+      ...cityRankings.map(city => [city.name, `${city.adoption}%`, city.users]),
+    ]
+    const csvContent = csvData.map(row => row.join(",")).join("\n")
+    const blob = new Blob([csvContent], { type: "text/csv" })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `rayvolution-analytics-${new Date().toISOString().split("T")[0]}.csv`
+    link.click()
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-card/10 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,11 +109,11 @@ export default function AdminDashboard() {
             <p className="text-foreground/60">System analytics and network insights</p>
           </div>
           <div className="flex gap-3">
-            <Button className="gap-2 bg-primary hover:bg-primary/90">
+            <Button onClick={handleExportCSV} className="gap-2 bg-primary hover:bg-primary/90">
               <Download className="w-4 h-4" />
               Export CSV
             </Button>
-            <Button variant="outline">Export PDF</Button>
+            <Button variant="outline" onClick={() => window.print()}>Export PDF</Button>
           </div>
         </motion.div>
 

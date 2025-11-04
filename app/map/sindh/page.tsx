@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Navbar from '@/components/navbar';
+import { Navbar } from '@/components/navbar';
 
 interface District {
   _id: string;

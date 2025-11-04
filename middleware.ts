@@ -6,8 +6,6 @@ const protectedRoutes = [
   '/dashboard',
   '/profile',
   '/challenges',
-  '/marketplace',
-  '/sustainability',
   '/ai-prediction',
   '/admin',
 ]

@@ -24,10 +24,10 @@ exports.getUserStats = async (req, res) => {
 // @access  Public
 exports.getGlobalLeaderboard = async (req, res) => {
   try {
-    const { sortBy = 'sustainabilityScore', limit = 50 } = req.query;
+    const { sortBy = 'greenCoins', limit = 50 } = req.query;
 
-    const validSortFields = ['sustainabilityScore', 'energySaved', 'co2Reduced', 'greenCoins', 'streak'];
-    const sortField = validSortFields.includes(sortBy) ? `stats.${sortBy}` : 'stats.sustainabilityScore';
+    const validSortFields = ['energySaved', 'co2Reduced', 'greenCoins', 'streak'];
+    const sortField = validSortFields.includes(sortBy) ? `stats.${sortBy}` : 'stats.greenCoins';
 
     const leaderboard = await User.find()
       .select('name city stats achievements createdAt')
@@ -56,10 +56,10 @@ exports.getGlobalLeaderboard = async (req, res) => {
 exports.getCityLeaderboard = async (req, res) => {
   try {
     const { cityName } = req.params;
-    const { sortBy = 'sustainabilityScore', limit = 50 } = req.query;
+    const { sortBy = 'greenCoins', limit = 50 } = req.query;
 
-    const validSortFields = ['sustainabilityScore', 'energySaved', 'co2Reduced', 'greenCoins', 'streak'];
-    const sortField = validSortFields.includes(sortBy) ? `stats.${sortBy}` : 'stats.sustainabilityScore';
+    const validSortFields = ['energySaved', 'co2Reduced', 'greenCoins', 'streak'];
+    const sortField = validSortFields.includes(sortBy) ? `stats.${sortBy}` : 'stats.greenCoins';
 
     const leaderboard = await User.find({ city: cityName })
       .select('name stats achievements createdAt')
@@ -92,21 +92,21 @@ exports.getUserRank = async (req, res) => {
       return sendError(res, 'User not found', 404);
     }
 
-    // Get global rank
+    // Get global rank based on greenCoins
     const globalRank = await User.countDocuments({
-      'stats.sustainabilityScore': { $gt: user.stats.sustainabilityScore }
+      'stats.greenCoins': { $gt: user.stats.greenCoins }
     }) + 1;
 
     // Get city rank
     const cityRank = await User.countDocuments({
       city: user.city,
-      'stats.sustainabilityScore': { $gt: user.stats.sustainabilityScore }
+      'stats.greenCoins': { $gt: user.stats.greenCoins }
     }) + 1;
 
     sendSuccess(res, {
       globalRank,
       cityRank,
-      sustainabilityScore: user.stats.sustainabilityScore
+      greenCoins: user.stats.greenCoins
     }, 'User rank retrieved successfully');
   } catch (error) {
     console.error('Get user rank error:', error);

@@ -1,9 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Sun, Wind, TrendingUp, Leaf, Cloud, Zap, Brain, MapPin, Trophy, ArrowRightLeft, Target } from "lucide-react"
+import { Sun, Wind, TrendingUp, Leaf, Cloud, Zap, Brain, MapPin, Target } from "lucide-react"
 import { DashboardCard } from "@/components/dashboard-card"
-import { SustainabilityGauge } from "@/components/sustainability-gauge"
 import { GrowthChart } from "@/components/growth-chart"
 import { WeatherIndicator } from "@/components/weather-indicator"
 import { AnimatedCounter } from "@/components/animated-counter"
@@ -139,22 +138,16 @@ export default function Dashboard() {
           </motion.div>
         </motion.div>
 
-        {/* Sustainability Score & Growth */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <motion.div variants={itemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
-            <SustainabilityGauge score={76} />
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.35 }}
-            className="lg:col-span-2"
-          >
-            <GrowthChart />
-          </motion.div>
-        </div>
+        {/* Growth Chart */}
+        <motion.div
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.3 }}
+          className="mb-8"
+        >
+          <GrowthChart />
+        </motion.div>
 
         {/* AI Insights & Quick Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -262,24 +255,6 @@ export default function Dashboard() {
               </Card>
             </Link>
 
-            <Link href="/marketplace">
-              <Card className="glass-dark p-6 hover:glass-light transition-all cursor-pointer group neon-border-cyan h-full">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors">
-                    <ArrowRightLeft className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      Energy Marketplace
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      Trade or donate energy tokens to support communities in need
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-
             <Link href="/challenges">
               <Card className="glass-dark p-6 hover:glass-light transition-all cursor-pointer group neon-border-emerald h-full">
                 <div className="flex items-start gap-4">
@@ -292,42 +267,6 @@ export default function Dashboard() {
                     </h3>
                     <p className="text-sm text-foreground/60">
                       Complete daily tasks, build streaks, and earn GreenCoins rewards
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-
-            <Link href="/sustainability">
-              <Card className="glass-dark p-6 hover:glass-light transition-all cursor-pointer group neon-border-cyan h-full">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-emerald-500/20 group-hover:bg-emerald-500/30 transition-colors">
-                    <Leaf className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      Sustainability Score
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      Track your eco-performance between 0-100 based on multiple factors
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </Link>
-
-            <Link href="/community">
-              <Card className="glass-dark p-6 hover:glass-light transition-all cursor-pointer group neon-border-emerald h-full">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-cyan-500/20 group-hover:bg-cyan-500/30 transition-colors">
-                    <Trophy className="w-6 h-6 text-cyan-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-foreground mb-2 group-hover:text-accent transition-colors">
-                      Community Hub
-                    </h3>
-                    <p className="text-sm text-foreground/60">
-                      Earn badges, compete on leaderboards, and join the Rayvolution
                     </p>
                   </div>
                 </div>

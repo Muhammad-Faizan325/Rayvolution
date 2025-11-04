@@ -108,24 +108,13 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href="/community"
+              href="/calculator"
               className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
-                pathname === "/community" ? "text-primary" : ""
+                pathname === "/calculator" ? "text-primary" : ""
               }`}
             >
-              Community
-              {pathname === "/community" && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
-              )}
-            </Link>
-            <Link
-              href="/marketplace"
-              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
-                pathname === "/marketplace" ? "text-primary" : ""
-              }`}
-            >
-              Marketplace
-              {pathname === "/marketplace" && (
+              Calculator
+              {pathname === "/calculator" && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
               )}
             </Link>
@@ -137,17 +126,6 @@ export function Navbar() {
             >
               Challenges
               {pathname === "/challenges" && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
-              )}
-            </Link>
-            <Link
-              href="/sustainability"
-              className={`text-foreground/70 hover:text-primary transition-colors relative pb-1 ${
-                pathname === "/sustainability" ? "text-primary" : ""
-              }`}
-            >
-              Score
-              {pathname === "/sustainability" && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-accent rounded-full" />
               )}
             </Link>
@@ -240,28 +218,6 @@ export function Navbar() {
               )}
             </Link>
             <Link
-              href="/community"
-              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
-                pathname === "/community" ? "text-primary font-medium" : ""
-              }`}
-            >
-              Community
-              {pathname === "/community" && (
-                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
-              )}
-            </Link>
-            <Link
-              href="/marketplace"
-              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
-                pathname === "/marketplace" ? "text-primary font-medium" : ""
-              }`}
-            >
-              Marketplace
-              {pathname === "/marketplace" && (
-                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
-              )}
-            </Link>
-            <Link
               href="/challenges"
               className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
                 pathname === "/challenges" ? "text-primary font-medium" : ""
@@ -269,17 +225,6 @@ export function Navbar() {
             >
               Challenges
               {pathname === "/challenges" && (
-                <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
-              )}
-            </Link>
-            <Link
-              href="/sustainability"
-              className={`block px-4 py-2 text-foreground/70 hover:text-primary transition-colors relative ${
-                pathname === "/sustainability" ? "text-primary font-medium" : ""
-              }`}
-            >
-              Sustainability Score
-              {pathname === "/sustainability" && (
                 <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary to-accent rounded-r-full" />
               )}
             </Link>

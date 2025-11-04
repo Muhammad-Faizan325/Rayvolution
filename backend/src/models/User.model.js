@@ -61,12 +61,6 @@ const userSchema = new mongoose.Schema({
       default: 100, // Starting bonus
       min: 0
     },
-    sustainabilityScore: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 100
-    },
     streak: {
       type: Number,
       default: 0,
@@ -85,8 +79,6 @@ const userSchema = new mongoose.Schema({
       'month_streak',
       'solar_adopter',
       'energy_saver',
-      'community_helper',
-      'marketplace_trader',
       'challenge_master',
       'eco_warrior'
     ]
@@ -127,17 +119,6 @@ userSchema.pre('save', async function(next) {
 // Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
-};
-
-// Method to calculate sustainability score
-userSchema.methods.calculateSustainabilityScore = function() {
-  const energyScore = Math.min((this.stats.energySaved / 1000) * 20, 30);
-  const co2Score = Math.min((this.stats.co2Reduced / 500) * 20, 30);
-  const streakScore = Math.min(this.stats.streak * 2, 20);
-  const achievementScore = Math.min(this.achievements.length * 5, 20);
-
-  this.stats.sustainabilityScore = Math.round(energyScore + co2Score + streakScore + achievementScore);
-  return this.stats.sustainabilityScore;
 };
 
 // Method to update streak

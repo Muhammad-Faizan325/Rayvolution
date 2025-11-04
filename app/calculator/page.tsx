@@ -15,6 +15,7 @@ interface FormData {
   area: number
   energySource: string
   hasSolarPanels: boolean
+  solarSystemKW: number
   hasSmartWind: boolean
   hasShaderTrees: boolean
   hasInsulation: boolean
@@ -32,6 +33,8 @@ interface Results {
   costReduction: number
   monthlyAverage: number
   paybackPeriod: number
+  solarGenerationKWh: number
+  solarSavingsAmount: number
 }
 
 const CITY_SOLAR_DATA: Record<string, { avgSunlight: number; costPerKwh: number }> = {
@@ -56,6 +59,7 @@ export default function EnergyCalculator() {
     area: 2000,
     energySource: "Grid",
     hasSolarPanels: false,
+    solarSystemKW: 5,
     hasSmartWind: false,
     hasShaderTrees: false,
     hasInsulation: false,
@@ -69,11 +73,18 @@ export default function EnergyCalculator() {
     const solarData = CITY_SOLAR_DATA[formData.city] || CITY_SOLAR_DATA.Lahore
     const baseAnnualCost = formData.monthlyBill * 12
     let savings = 0
+    let solarGenerationKWh = 0
+    let solarSavingsAmount = 0
 
-    // Solar savings
-    if (formData.hasSolarPanels) {
-      const solarGeneration = (formData.area / 100) * solarData.avgSunlight * 30 * 365
-      savings += (solarGeneration * 0.85 * solarData.costPerKwh) / 1000
+    // Solar savings based on system kW capacity
+    if (formData.hasSolarPanels && formData.solarSystemKW > 0) {
+      // Average daily generation = kW × average sunlight hours × system efficiency (0.85)
+      const dailyGeneration = formData.solarSystemKW * solarData.avgSunlight * 0.85
+      // Annual generation in kWh
+      solarGenerationKWh = Math.round(dailyGeneration * 365)
+      // Annual savings in rupees
+      solarSavingsAmount = Math.round(solarGenerationKWh * solarData.costPerKwh)
+      savings += solarSavingsAmount
     }
 
     // Smart wind savings
@@ -100,20 +111,24 @@ export default function EnergyCalculator() {
     // Calculate metrics
     const annualSavings = Math.round(savings)
     const tenYearCost = (baseAnnualCost - annualSavings) * 10
-    const initialCost = baseAnnualCost * 10
-    const costReduction = Math.round((annualSavings / baseAnnualCost) * 100)
-    const co2Saved = Math.round((annualSavings / 1000) * 0.92)
+    const costReduction = baseAnnualCost > 0 ? Math.round((annualSavings / baseAnnualCost) * 100) : 0
+    // CO2 saved: approximately 0.92 kg CO2 per kWh in Pakistan
+    const co2Saved = Math.round((solarGenerationKWh * 0.92) / 1000) // in tons
     const solarEfficiency = formData.hasSolarPanels ? 85 : 0
-    const paybackPeriod = formData.hasSolarPanels ? 6 : 0
+    // Typical solar system cost in Pakistan: PKR 100,000 - 120,000 per kW
+    const solarSystemCost = formData.solarSystemKW * 110000
+    const paybackPeriod = solarSavingsAmount > 0 ? Math.round((solarSystemCost / solarSavingsAmount) * 10) / 10 : 0
 
     return {
       tenYearCost,
       annualSavings,
       co2Saved,
       solarEfficiency,
-      costReduction,
+      costReduction: Math.min(costReduction, 100),
       monthlyAverage: Math.round(annualSavings / 12),
       paybackPeriod,
+      solarGenerationKWh,
+      solarSavingsAmount,
     }
   }
 
@@ -325,6 +340,30 @@ export default function EnergyCalculator() {
                                 )
                               })}
                             </div>
+
+                            {/* Solar System Capacity Input */}
+                            {formData.hasSolarPanels && (
+                              <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/30">
+                                <label className="block text-sm font-medium mb-2">
+                                  Solar System Capacity (kW)
+                                </label>
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max="100"
+                                  step="0.5"
+                                  value={formData.solarSystemKW}
+                                  onChange={(e) =>
+                                    setFormData({ ...formData, solarSystemKW: Number.parseFloat(e.target.value) || 0 })
+                                  }
+                                  className="w-full px-4 py-3 rounded-lg bg-input border border-input text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                  placeholder="e.g., 5"
+                                />
+                                <p className="text-xs text-foreground/60 mt-2">
+                                  Enter your solar panel system capacity in kilowatts (kW). Common residential systems range from 3-10 kW.
+                                </p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -469,7 +508,7 @@ export default function EnergyCalculator() {
                     <li className="pt-2 border-t border-white/10">
                       <span className="text-foreground">Solutions Selected:</span>
                       {[
-                        formData.hasSolarPanels && "Solar Panels",
+                        formData.hasSolarPanels && `Solar Panels (${formData.solarSystemKW} kW)`,
                         formData.hasSmartWind && "SmartWind",
                         formData.hasShaderTrees && "Shade Trees",
                         formData.hasInsulation && "Insulation",
@@ -519,6 +558,36 @@ export default function EnergyCalculator() {
                 <CircularGauge label="Cost Reduction" value={results.costReduction} />
               </div>
 
+              {/* Solar Generation Details */}
+              {formData.hasSolarPanels && results.solarGenerationKWh > 0 && (
+                <div className="glass-dark p-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
+                  <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <Zap className="w-6 h-6 text-emerald-400" />
+                    Solar Energy Generation
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="p-4 rounded-lg bg-white/5">
+                      <p className="text-sm text-foreground/70 mb-1">System Capacity</p>
+                      <p className="text-3xl font-bold text-primary">{formData.solarSystemKW} kW</p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-white/5">
+                      <p className="text-sm text-foreground/70 mb-1">Annual Generation</p>
+                      <p className="text-3xl font-bold text-emerald-400">{results.solarGenerationKWh.toLocaleString()} kWh</p>
+                      <p className="text-xs text-foreground/50 mt-1">
+                        ~{Math.round(results.solarGenerationKWh / 12).toLocaleString()} kWh/month
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-lg bg-white/5">
+                      <p className="text-sm text-foreground/70 mb-1">Solar Savings</p>
+                      <p className="text-3xl font-bold text-accent">₨{results.solarSavingsAmount.toLocaleString()}</p>
+                      <p className="text-xs text-foreground/50 mt-1">
+                        ₨{Math.round(results.solarSavingsAmount / 12).toLocaleString()}/month
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Detailed Breakdown */}
               <div className="glass-dark p-8 rounded-2xl">
                 <h3 className="text-2xl font-bold mb-6">Detailed Breakdown</h3>
@@ -526,10 +595,14 @@ export default function EnergyCalculator() {
                   {[
                     {
                       icon: DollarSign,
-                      label: "Initial Investment",
-                      value: `₨${(results.annualSavings * 0.3).toLocaleString()}`,
+                      label: "Solar System Investment",
+                      value: formData.hasSolarPanels ? `₨${(formData.solarSystemKW * 110000).toLocaleString()}` : "N/A",
                     },
-                    { icon: Zap, label: "Payback Period", value: `${results.paybackPeriod} years` },
+                    {
+                      icon: Zap,
+                      label: "Payback Period",
+                      value: results.paybackPeriod > 0 ? `${results.paybackPeriod} years` : "N/A"
+                    },
                     { icon: Leaf, label: "Trees Equivalent", value: `${Math.round(results.co2Saved * 15)}` },
                     { icon: Droplet, label: "Water Saved", value: `${Math.round(results.annualSavings / 100)} m³` },
                   ].map((item, i) => {
